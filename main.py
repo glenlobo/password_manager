@@ -1,8 +1,24 @@
+import random
 from tkinter import *
 from tkinter import messagebox
+import string
+from random import choice, randint, shuffle
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def generate_password():
+    letters = list(string.ascii_letters)
+    numbers = list(string.digits)
+    symbols = ['!', '#', '$', '&', '@', '%', '(', ')', '*']
+
+    rand_letters_list = [choice(letters) for _ in range(randint(8, 10))]
+    rand_numbers_list = [choice(numbers) for _ in range(randint(2, 4))]
+    rand_symbols_list = [choice(symbols) for _ in range(randint(2, 4))]
+
+    password_list = rand_letters_list + rand_numbers_list + rand_symbols_list
+    random.shuffle(password_list)
+    password = ''.join(password_list)
+    password_input.insert(END, password)
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -59,7 +75,7 @@ email_input.insert(END, "glen@gmail.com")
 password_input = Entry(width=25)
 password_input.grid(row=3, column=1, columnspan=1, sticky=EW, padx=10)
 
-generate_button = Button(text="Generate Password")
+generate_button = Button(text="Generate Password", command=generate_password)
 generate_button.grid(row=3, column=2, columnspan=1, sticky=EW, padx=10)
 
 add_button = Button(text="Add", width=30, command=save)
