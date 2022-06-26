@@ -18,7 +18,7 @@ def generate_password():
     password_list = rand_letters_list + rand_numbers_list + rand_symbols_list
     random.shuffle(password_list)
     password = ''.join(password_list)
-    password_input.insert(END, password)
+    password_input.insert(0, password)
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
