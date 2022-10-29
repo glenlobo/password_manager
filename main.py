@@ -1,4 +1,4 @@
-import random
+import json
 from tkinter import *
 from tkinter import messagebox
 import string
@@ -20,75 +20,80 @@ def generate_password():
     shuffle(password_list)
     password = ''.join(password_list)
 
-    main_ui.password_input.delete(0, END)
-    main_ui.password_input.insert(0, password)
+    password_input.delete(0, END)
+    password_input.insert(0, password)
 
     pyperclip.copy(password)
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save():
-    website = main_ui.website_input.get()
-    email = main_ui.email_input.get()
-    password = main_ui.password_input.get()
+    website = website_input.get()
+    email = email_input.get()
+    password = password_input.get()
+    new_data = {
+        website: {
+            'email': email,
+            'password': password,
+        }
+    }
 
     if len(website) == 0 or len(password) == 0:
         messagebox.showinfo(title='Empty filed!!!',
                             message="Please make sure you haven't left any fields empty.")
     else:
-        is_ok = messagebox.askokcancel(title=website,
-                                       message=f'These are the details entered: '
-                                               f'\n Email:{email} '
-                                               f'\n Password: {password}\nIs this OK to save?')
+        try:
+            with open('data.json', 'r') as data_file:
+                data = json.load(data_file)
+                data.update(new_data)
+        except FileNotFoundError:
+            data = new_data
 
-        if is_ok:
-            with open("data.txt", 'a') as file:
-                file.write(f'{website} | {email} | {password}\n')
-                main_ui.website_input.delete(0, END)
-                main_ui.password_input.delete(0, END)
+        with open('data.json', 'w') as data_file:
+            json.dump(data, data_file, indent=4)
+
+            website_input.delete(0, END)
+            password_input.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
 
-def main_ui():
-    window = Tk()
-    window.title("MyPass - Password Manager")
-    window.config(padx=50, pady=50)
 
-    canvas = Canvas(height=200, width=200)
-    logo_img = PhotoImage(file="logo.png")
+window = Tk()
+window.title('MyPass - Password Manager')
+window.config(padx=50, pady=50)
 
-    canvas.create_image(100, 100, image=logo_img)
-    canvas.grid(row=0, column=1, sticky=EW)
+canvas = Canvas(height=200, width=200)
+logo_img = PhotoImage(file='logo.png')
 
-    website_label = Label(text="Website:", anchor=W)
-    website_label.grid(row=1, column=0, sticky=EW, pady=5)
+canvas.create_image(100, 100, image=logo_img)
+canvas.grid(row=0, column=1, sticky=EW)
 
-    email_label = Label(text="Email/Username:", anchor=W)
-    email_label.grid(row=2, column=0, sticky=EW, pady=5)
+website_label = Label(text='Website:', anchor=W)
+website_label.grid(row=1, column=0, sticky=EW, pady=5)
 
-    password_label = Label(text="Password:", anchor=W)
-    password_label.grid(row=3, column=0, sticky=EW, pady=5)
+email_label = Label(text='Email/Username:', anchor=W)
+email_label.grid(row=2, column=0, sticky=EW, pady=5)
 
-    website_input = Entry(width=45)
-    website_input.grid(row=1, column=1, columnspan=2, sticky=EW, padx=10)
-    website_input.focus()
+password_label = Label(text='Password:', anchor=W)
+password_label.grid(row=3, column=0, sticky=EW, pady=5)
 
-    email_input = Entry(width=45)
-    email_input.grid(row=2, column=1, columnspan=2, sticky=EW, padx=10)
-    email_input.insert(END, "glen@gmail.com")
+website_input = Entry(width=45)
+website_input.grid(row=1, column=1, columnspan=2, sticky=EW, padx=10)
+website_input.focus()
 
-    password_input = Entry(width=25)
-    password_input.grid(row=3, column=1, columnspan=1, sticky=EW, padx=10)
+email_input = Entry(width=45)
+email_input.grid(row=2, column=1, columnspan=2, sticky=EW, padx=10)
+email_input.insert(END, 'glen@gmail.com')
 
-    generate_button = Button(text="Generate Password", command=generate_password)
-    generate_button.grid(row=3, column=2, columnspan=1, sticky=EW, padx=10)
+password_input = Entry(width=25)
+password_input.grid(row=3, column=1, columnspan=1, sticky=EW, padx=10)
 
-    add_button = Button(text="Add", width=30, command=save)
-    add_button.grid(row=4, column=1, columnspan=2, sticky=EW, padx=10)
+generate_button = Button(text='Generate Password', command=generate_password)
+generate_button.grid(row=3, column=2, columnspan=1, sticky=EW, padx=10)
 
-    window.mainloop()
+add_button = Button(text='Add', width=30, command=save)
+add_button.grid(row=4, column=1, columnspan=2, sticky=EW, padx=10)
 
+window.mainloop()
 
-if __name__ == "__main__":
-    main_ui()
