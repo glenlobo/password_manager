@@ -1,7 +1,5 @@
 import json
-import tkinter.messagebox
-from tkinter import *
-from tkinter import messagebox
+from tkinter import Tk, messagebox, Canvas, END, PhotoImage, EW, Label, Button, W, Entry
 import string
 from random import choice, randint, shuffle
 import pyperclip
@@ -65,17 +63,18 @@ def search():
         with open('data.json', 'r') as data_file:
             data = json.load(data_file)
     except FileNotFoundError:
-        tkinter.messagebox.showerror(title=f'Data Base Error',
-                                       message=f'Unable to find data. \nPlease enter data before searching.')
+        messagebox.showerror(title=f'Data Base Error',
+                             message=f'Unable to find data. \nPlease enter data before searching.')
     else:
         if website in data.keys():
             email = data[website]['email']
             password = data[website]['password']
-            tkinter.messagebox.showinfo(title=f'Match found! for {website}',
-                                        message=f' Email: {email}\n\n Password: {password}')
+            messagebox.showinfo(title=f'Match found! for {website}',
+                                message=f' Email: {email}\n\n Password: {password}')
         else:
-            tkinter.messagebox.showwarning(title=f'Unable to find a match',
-                                        message=f'No details for {website}')
+            messagebox.showwarning(title=f'Unable to find a match',
+                                   message=f'No details for {website}')
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -120,4 +119,3 @@ add_button = Button(text='Add', width=15, command=save)
 add_button.grid(row=4, column=1, columnspan=2, sticky=EW, padx=10)
 
 window.mainloop()
-
