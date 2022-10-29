@@ -1,4 +1,5 @@
 import json
+import tkinter.messagebox
 from tkinter import *
 from tkinter import messagebox
 import string
@@ -46,6 +47,7 @@ def save():
             with open('data.json', 'r') as data_file:
                 data = json.load(data_file)
                 data.update(new_data)
+
         except FileNotFoundError:
             data = new_data
 
@@ -55,6 +57,25 @@ def save():
             website_input.delete(0, END)
             password_input.delete(0, END)
 
+
+# ---------------------------- SAVE PASSWORD ------------------------------- #
+def search():
+    website = website_input.get()
+    try:
+        with open('data.json', 'r') as data_file:
+            data = json.load(data_file)
+    except FileNotFoundError:
+        tkinter.messagebox.showerror(title=f'Data Base Error',
+                                       message=f'Unable to find data. \nPlease enter data before searching.')
+    else:
+        if website in data.keys():
+            email = data[website]['email']
+            password = data[website]['password']
+            tkinter.messagebox.showinfo(title=f'Match found! for {website}',
+                                        message=f' Email: {email}\n\n Password: {password}')
+        else:
+            tkinter.messagebox.showwarning(title=f'Unable to find a match',
+                                        message=f'No details for {website}')
 
 # ---------------------------- UI SETUP ------------------------------- #
 
@@ -78,8 +99,8 @@ email_label.grid(row=2, column=0, sticky=EW, pady=5)
 password_label = Label(text='Password:', anchor=W)
 password_label.grid(row=3, column=0, sticky=EW, pady=5)
 
-website_input = Entry(width=45)
-website_input.grid(row=1, column=1, columnspan=2, sticky=EW, padx=10)
+website_input = Entry(width=25)
+website_input.grid(row=1, column=1, columnspan=1, sticky=EW, padx=10)
 website_input.focus()
 
 email_input = Entry(width=45)
@@ -89,10 +110,13 @@ email_input.insert(END, 'glen@gmail.com')
 password_input = Entry(width=25)
 password_input.grid(row=3, column=1, columnspan=1, sticky=EW, padx=10)
 
+search_button = Button(text='Search', width=15, command=search)
+search_button.grid(row=1, column=2, columnspan=1, sticky=EW, padx=10)
+
 generate_button = Button(text='Generate Password', command=generate_password)
 generate_button.grid(row=3, column=2, columnspan=1, sticky=EW, padx=10)
 
-add_button = Button(text='Add', width=30, command=save)
+add_button = Button(text='Add', width=15, command=save)
 add_button.grid(row=4, column=1, columnspan=2, sticky=EW, padx=10)
 
 window.mainloop()
