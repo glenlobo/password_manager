@@ -1,2 +1,3 @@
 .github/
-.idea/
+.idea/!/source/data.json
+/source/data.json

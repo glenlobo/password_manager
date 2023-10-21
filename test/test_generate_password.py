@@ -1,7 +1,3 @@
-import pytest
-from main import generate_password
-
-
 def testHello():
     print("hello")
     # print(generate_password().password)
